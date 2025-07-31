@@ -1,25 +1,44 @@
 // src/App.jsx
-import { Route, Routes, Link } from 'react-router';
-import { UserCard } from './components/user-cart';
+import { Route, Routes, NavLink } from 'react-router-dom';
+import { UserCard, EditUser } from './components/user';
 import { Home, Settings } from './components/navigation';
+import { NowDate } from './components/user/now-date';
 import './App.css';
-import { EditUser } from './components/user-cart';
 
 export default function App() {
   return (
     <>
-      <div className="container">
-        <nav className="nav">
-          <Link to="/">Главная</Link>
-          <Link to="/settings">Настройки</Link>
+      <div className="glass-app-container">
+        <nav className="glass-navbar">
+          <NowDate />
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive ? 'glass-link active' : 'glass-link'
+            }
+          >
+            <i className="bi bi-house-fill"></i>
+          </NavLink>
+
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              isActive ? 'glass-link active' : 'glass-link'
+            }
+          >
+            <i className="bi bi-gear-fill"></i>
+          </NavLink>
         </nav>
       </div>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/user/:id" element={<UserCard />} />
-        <Route path="/edit-user/:id" element={<EditUser />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
+
+      <main className="glass-main">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/user/:id" element={<UserCard />} />
+          <Route path="/edit-user/:id" element={<EditUser />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </main>
     </>
   );
 }

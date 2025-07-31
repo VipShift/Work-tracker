@@ -3,11 +3,43 @@ import { v4 as uuid } from 'uuid';
 
 const initialState = {
   users: [
-    { id: 1, name: 'Иван', age: 25, phone: '123-45-67', workingHours: [] },
-    { id: 2, name: 'Анна', age: 30, phone: '123-45-98', workingHours: [] },
+    {
+      id: 1,
+      name: 'Сергей Трофимов',
+      age: 25,
+      phone: '123-45-67',
+      workingHours: [],
+    },
+    {
+      id: 2,
+      name: 'Филип Пикольний',
+      age: 30,
+      phone: '123-45-98',
+      workingHours: [],
+    },
+    {
+      id: 3,
+      name: 'Трофим Иванов',
+      age: 99,
+      phone: '123-45-98',
+      workingHours: [],
+    },
+    {
+      id: 4,
+      name: 'Руслан Иванов',
+      age: 30,
+      phone: '123-45-98',
+      workingHours: [],
+    },
+    {
+      id: 5,
+      name: 'Женя ТУТ и там',
+      age: 30,
+      phone: '123-45-98',
+      workingHours: [],
+    },
   ],
 };
-
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'ADD_USER': {
@@ -46,8 +78,12 @@ export const userReducer = (state = initialState, action) => {
       const { userId, amount, shiftType } = action.payload;
       const now = new Date();
 
-      const formattedDate = now.toISOString().split('T')[0]; // YYYY-MM-DD
-      const formattedTime = now.toISOString().slice(0, 5); // HH:MM
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`; // MM-DD-YYYY
+
+      const formattedTime = now.toTimeString().slice(0, 5); // HH:MM
 
       return {
         ...state,
@@ -70,6 +106,7 @@ export const userReducer = (state = initialState, action) => {
         ),
       };
     }
+
     case 'UPDATE_WORKING_HOUR': {
       const { userId, hourId, newAmount, newShiftType, newDate, newTime } =
         action.payload;
@@ -136,28 +173,3 @@ export const deleteWorkHour = (payload) => ({
   type: 'DELETE_WORKING_HOUR',
   payload,
 });
-
-// const userSlice = createSlice({
-//   name: 'userState',
-//   initialState,
-//   reducers: {
-//     updateUser: (state, action) => {
-//       const { id, name, age } = action.payload;
-//       const user = state.users.find((u) => u.id);
-//       if (user) {
-//         user.name = name;
-//         user.age = age;
-//       }
-//     },
-//     addUser: (state, action) => {
-//       const { name, age } = action.payload;
-//       const newId = state.users.length
-//         ? Math.max(...state.users.map((u) => u.id)) + 1
-//         : 1;
-//       state.users.push({ id: newId, name, age });
-//     },
-//   },
-// });
-
-// export const { updateUser, addUser } = userSlice.actions;
-// export default userSlice.reducer;

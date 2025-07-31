@@ -1,0 +1,43 @@
+/* src/user-cart/now-date.css */
+.now-date {
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 5px;
+  padding: 4px 9px;
+  width: fit-content;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.3s ease;
+  animation: fadeIn 0.6s ease;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.now-date:hover {
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2),
+              0 0 30px rgba(214, 214, 214, 0.3);
+  transform: scale(1.02);
+}
+
+.now-date-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.5px;
+}
+
+/* Анимация появления */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

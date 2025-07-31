@@ -1,0 +1,67 @@
+// src/components/user-cart/add-user.jsx
+
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { addUser } from '../../../store/user-reducer';
+import { useState } from 'react';
+import './add-user.css'; // ✅ Не забудь подключить стили
+
+export const AddUser = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
+  const [phone, setPhone] = useState('');
+
+  const handelAdd = () => {
+    if (!name || !age) {
+      alert('Заполните все поля');
+      return;
+    }
+
+    dispatch(
+      addUser({
+        name,
+        age: Number(age),
+        phone: Number(phone),
+        workingHours: [],
+      })
+    );
+    navigate('/');
+  };
+
+  return (
+    <div className="add-user-glass glass-wrapper">
+      <div className="glass-card-form">
+        <h2 className="glass-title center-text"> Добавить пользователя</h2>
+
+        <input
+          className="glass-input wide-input"
+          placeholder="Имя"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        <input
+          className="glass-input wide-input"
+          type="number"
+          placeholder="Возраст"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+        />
+
+        <input
+          className="glass-input wide-input"
+          placeholder="Телефон"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+
+        <button className="glass-btn glass-shadow" onClick={handelAdd}>
+          <i className="bi bi-person-plus"></i>
+        </button>
+      </div>
+    </div>
+  );
+};

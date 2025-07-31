@@ -1,0 +1,105 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom right, #1a1a1a, #333333);
+  color: #fff;
+  min-height: 100vh;
+  line-height: 1.5;
+  margin: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+}
+
+input, select {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  color: inherit;
+  font-size: inherit;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  max-width:  100%;
+  text-align: center;
+
+}
+
+
+.glass-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.glass-text {
+  font-size: 16px;
+  color: white;
+}
+
+.glass-input,
+.glass-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  margin-bottom: 8px;
+}
+
+.glass-select {
+  appearance: none; /* убирает дефолтные стрелки браузера */
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  font-size: 16px;
+  backdrop-filter: blur(5px);
+  transition: 0.3s ease;
+}
+
+.glass-select:focus {
+  outline: none;
+  border-color: rgb(79, 79, 79);
+  box-shadow: 0 0 5px rgb(223, 223, 223);
+}
+.glass-select option {
+  background-color: #2c2c2c;
+  color: white;
+}
+
+
+.glass-btn {
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.088); /* полупрозрачный фон */
+  color: white;
+  font-weight: bold;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+}
+
+.glass-btn:hover {
+  transform: scale(1.05);
+  background: rgba(10, 10, 10, 0.15);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+

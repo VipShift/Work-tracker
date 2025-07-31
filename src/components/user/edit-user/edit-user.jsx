@@ -1,7 +1,10 @@
+// src/components/user-cart/edit-user.jsx
+
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUser } from '../../store/user-reducer';
+import { updateUser } from '../../../store/user-reducer';
 import { useState } from 'react';
+import './edit-user.css';
 
 export const EditUser = () => {
   const { id } = useParams();
@@ -28,16 +31,27 @@ export const EditUser = () => {
   };
 
   return (
-    <div>
-      <h2> Редактировать пользователя </h2>
-      <input value={name} onChange={(e) => setName(e.target.value)} />
+    <div className="edit-user-glass">
+      <h2 className="glass-title">Редактировать пользователя</h2>
       <input
+        className="glass-input"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <input
+        className="glass-input"
         type="number"
         value={age}
         onChange={(e) => setAge(Number(e.target.value))}
       />
-      <input value={phone} onChange={(e) => setPhone(Number(e.target.value))} />
-      <button onClick={handleSave}>Сохранить</button>
+      <input
+        className="glass-input"
+        value={phone}
+        onChange={(e) => setPhone(Number(e.target.value))}
+      />
+      <button className="glass-btn" onClick={handleSave}>
+        Сохранить
+      </button>
     </div>
   );
 };

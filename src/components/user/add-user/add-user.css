@@ -1,0 +1,11 @@
+.add-user-glass {
+  margin: 20px auto;
+  max-width: 600px;
+  padding: 20px;
+}
+
+.glass-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

@@ -1,12 +1,12 @@
 // src/components/home.jsx
-import { UserList } from '../user-cart';
+import { UserList } from '../user';
 import './home.css';
 
 export const Home = () => {
   return (
-    <div className="home-gradient">
-      <h1>🏠 Home</h1>
-      <div className="user-list-wrapper">
+    <div>
+      <h1 className="glass-title center-text">Главная</h1>
+      <div>
         <UserList />
       </div>
     </div>
