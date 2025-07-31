@@ -3,9 +3,18 @@ import { Route, Routes, NavLink } from 'react-router-dom';
 import { UserCard, EditUser } from './components/user';
 import { Home, Settings } from './components/navigation';
 import { NowDate } from './components/user/now-date';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { fetchUsers } from './store/user-thunks';
 import './App.css';
 
 export default function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
   return (
     <>
       <div className="glass-app-container">

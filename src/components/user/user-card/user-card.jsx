@@ -3,7 +3,10 @@
 import './user-card.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateWorkHour, deleteWorkHour } from '../../../store/user-reducer';
+import {
+  updateWorkHourInFirebase,
+  deleteWorkHourFromFirebase,
+} from '../../../store/user-thunks';
 import { useState, useEffect } from 'react';
 
 export const UserCard = () => {
@@ -12,18 +15,21 @@ export const UserCard = () => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) =>
-    state.userState.users.find((u) => u.id === Number(id))
+    state.userState.users.find((u) => u.id === id)
   );
 
   const [localHours, setLocalHours] = useState([]);
 
   useEffect(() => {
-    if (user?.workingHours && Array.isArray(user.workingHours)) {
-      setLocalHours(user.workingHours);
+    if (user?.workingHours && typeof user.workingHours === 'object') {
+      const hoursArray = Object.entries(user.workingHours).map(
+        ([id, data]) => ({ id, ...data })
+      );
+      setLocalHours(hoursArray);
     } else {
       setLocalHours([]);
     }
-  }, [user?.workingHours]);
+  }, [user]);
 
   const handleChange = (hourId, field, value) => {
     setLocalHours((prev) =>
@@ -35,13 +41,15 @@ export const UserCard = () => {
 
   const handleSave = (entry) => {
     dispatch(
-      updateWorkHour({
+      updateWorkHourInFirebase({
         userId: user.id,
         hourId: entry.id,
-        newAmount: Number(entry.amount),
-        newDate: entry.date,
-        newTime: entry.time,
-        newShiftType: entry.shiftType,
+        updatedHour: {
+          amount: Number(entry.amount),
+          date: entry.date,
+          time: entry.time,
+          shiftType: entry.shiftType,
+        },
       })
     );
   };
@@ -107,7 +115,10 @@ export const UserCard = () => {
                 className="glass-btn"
                 onClick={() =>
                   dispatch(
-                    deleteWorkHour({ userId: user.id, hourId: entry.id })
+                    deleteWorkHourFromFirebase({
+                      userId: user.id,
+                      hourId: entry.id,
+                    })
                   )
                 }
               >

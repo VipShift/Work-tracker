@@ -3,8 +3,8 @@
 import './user-list.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { addWorkHour } from '../../../store/user-reducer';
+import { useState, useEffect } from 'react';
+import { saveWorkHour } from '../../../store/user-thunks';
 
 export const UserList = () => {
   const users = useSelector((state) => state.userState.users);
@@ -30,12 +30,14 @@ export const UserList = () => {
     const today = new Date().toISOString().split('T')[0];
 
     dispatch(
-      addWorkHour({
+      saveWorkHour({
         userId,
-        amount: Number(amount),
-        shiftType,
-        date: today,
-        time,
+        hour: {
+          amount: Number(amount),
+          shiftType: shiftType,
+          date: today,
+          time: time || ' ',
+        },
       })
     );
 
@@ -53,9 +55,13 @@ export const UserList = () => {
         <div className="user-list-glass">
           {users.map((user) => {
             const userData = inputs[user.id] || {};
+            const workingHoursValues = user.workingHours
+              ? Object.values(user.workingHours)
+              : [];
+
             const lastWork =
-              Array.isArray(user.workingHours) && user.workingHours.length > 0
-                ? user.workingHours[user.workingHours.length - 1]
+              workingHoursValues.length > 0
+                ? workingHoursValues[workingHoursValues.length - 1]
                 : null;
 
             return (
