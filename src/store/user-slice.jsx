@@ -2,7 +2,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchUsers,
-  saveUser,
   updateUserInFirebase,
   deleteUserFromFirebase,
   saveWorkHour,
@@ -19,7 +18,11 @@ const initialState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setUsersFromRealtime: (state, action) => {
+      state.users = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
 
@@ -38,9 +41,9 @@ const userSlice = createSlice({
       })
 
       // Добавление пользователя
-      .addCase(saveUser.fulfilled, (state, action) => {
-        state.users.push(action.payload);
-      })
+      // .addCase(saveUser.fulfilled, (state, action) => {
+      //   state.users.push(action.payload);
+      // })
 
       // Обновление пользователя
       .addCase(updateUserInFirebase.fulfilled, (state, action) => {
@@ -90,3 +93,5 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
+
+export const { setUsersFromRealtime } = userSlice.actions;

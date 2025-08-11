@@ -1,8 +1,35 @@
 // src/store/user-thunks.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { db } from '../firebase'; // уже готовая база
-import { ref, set, update, remove, get, child, push } from 'firebase/database';
+import { db } from '../firebase';
+import {
+  ref,
+  set,
+  update,
+  remove,
+  get,
+  child,
+  push,
+  onValue,
+} from 'firebase/database';
 import { v4 as uuid } from 'uuid';
+import { setUsersFromRealtime } from './user-slice';
+
+export const subscribeToUsersRealtime = () => (dispatch) => {
+  const dbRef = ref(db, 'users');
+
+  return onValue(dbRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      const users = Object.entries(data).map(([key, value]) => ({
+        id: key,
+        ...value,
+      }));
+      dispatch(setUsersFromRealtime(users));
+    } else {
+      dispatch(setUsersFromRealtime([]));
+    }
+  });
+};
 
 // Получение всех пользователей
 export const fetchUsers = createAsyncThunk(
@@ -14,7 +41,14 @@ export const fetchUsers = createAsyncThunk(
       if (!snapshot.exists()) return [];
 
       const data = snapshot.val();
-      return Object.values(data);
+
+      // Формируем массив с id из ключей
+      const users = Object.entries(data).map(([key, value]) => ({
+        id: key,
+        ...value,
+      }));
+
+      return users;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -30,7 +64,7 @@ export const saveUser = createAsyncThunk(
       const newUser = { ...user, id, workingHours: [] };
       await set(ref(db, `users/${id}`), newUser);
       console.log('[saveUser] User saved');
-      return newUser;
+      return null;
     } catch (error) {
       console.error('[saveUser ERROR]', error);
       return thunkAPI.rejectWithValue(error.message);
@@ -73,7 +107,7 @@ export const saveWorkHour = createAsyncThunk(
       const userRef = ref(db, `users/${userId}/workingHours`);
       const newRef = push(userRef);
       await set(newRef, newHour);
-      return { userId, newHour };
+      return null;
     } catch (error) {
       console.error('[saveWorkHour ERROR]', error);
       return thunkAPI.rejectWithValue(error.message);
@@ -87,7 +121,7 @@ export const updateWorkHourInFirebase = createAsyncThunk(
   async ({ userId, hourId, updatedHour }, thunkAPI) => {
     try {
       await set(ref(db, `users/${userId}/workingHours/${hourId}`), updatedHour);
-      return { userId, hourId, updatedHour };
+      return null;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -100,7 +134,7 @@ export const deleteWorkHourFromFirebase = createAsyncThunk(
   async ({ userId, hourId }, thunkAPI) => {
     try {
       await remove(ref(db, `users/${userId}/workingHours/${hourId}`));
-      return { userId, hourId };
+      return null;
     } catch (error) {
       console.error('[deleteWorkHour ERROR]', error);
       return thunkAPI.rejectWithValue(error.message);
