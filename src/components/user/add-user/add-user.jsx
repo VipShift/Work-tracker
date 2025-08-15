@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { saveUser } from '../../../store/user-thunks';
+import { saveUserFr } from '../../../store/user-reducer';
 import { useState } from 'react';
 import './add-user.css';
 
@@ -19,7 +19,7 @@ export const AddUser = () => {
     }
 
     dispatch(
-      saveUser({
+      saveUserFr({
         name,
         age: Number(age),
         phone,

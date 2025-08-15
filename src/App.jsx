@@ -5,16 +5,14 @@ import { Home, Settings } from './components/navigation';
 import { NowDate } from './components/user/now-date';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { subscribeToUsersRealtime } from './store/user-thunks';
+import { subscribeToUsersRealtimeFr } from './store/user-reducer';
 import './App.css';
-
-//Унас двяться карточки ============= !!!!///
 
 export default function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(subscribeToUsersRealtime());
+    dispatch(subscribeToUsersRealtimeFr());
   }, [dispatch]);
 
   return (

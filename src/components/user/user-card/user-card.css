@@ -23,5 +23,60 @@
 
 .glass-list {
   list-style: none;
-  padding: 0;
+  padding: 40px;
 }
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+
+.glass-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.glass-item span:not(:last-child)::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background-color: rgba(255, 255, 255, 0.3); /* более мягкий цвет */
+  margin: 0 8px;
+  border-radius: 2px; /* округлённая линия */
+}
+
+
+.glass-item .date {
+  color: #bdbdbd;
+  font-size: 1rem;
+}
+
+
+
+.glass-item .amount {
+  color: #ffffff;
+}
+
+.glass-item .type {
+  font-weight: bold;
+  color: #a4a3a3;
+}
+
+

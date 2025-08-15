@@ -2,7 +2,7 @@ import './user-list.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { saveWorkHour } from '../../../store/user-thunks';
+import { saveUserHoursFr } from '../../../store/user-reducer';
 
 export const UserList = () => {
   const users = useSelector((state) => state.userState.users);
@@ -30,7 +30,7 @@ export const UserList = () => {
     const today = new Date().toISOString().split('T')[0];
 
     dispatch(
-      saveWorkHour({
+      saveUserHoursFr({
         userId,
         hour: {
           amount,

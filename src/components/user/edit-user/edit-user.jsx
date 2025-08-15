@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUserInFirebase } from '../../../store/user-thunks';
+import { updateWorkHourInFr } from '../../../store/user-reducer';
 import { useState } from 'react';
 import './edit-user.css';
 
@@ -19,7 +19,7 @@ export const EditUser = () => {
 
   const handleSave = () => {
     dispatch(
-      updateUserInFirebase({
+      updateWorkHourInFr({
         id,
         name,
         age,
