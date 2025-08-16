@@ -3,14 +3,13 @@ import { getDatabase } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyA_Lwhcwyf8yedWLjU_vDgtsGZNd1DpG5I',
-  authDomain: 'work-tracker-316be.firebaseapp.com',
-  projectId: 'work-tracker-316be',
-  storageBucket: 'work-tracker-316be.firebasestorage.app',
-  messagingSenderId: '809563938410',
-  appId: '1:809563938410:web:ff49f5493f2b0449a37413',
-  databaseURL:
-    'https://work-tracker-316be-default-rtdb.europe-west1.firebasedatabase.app/',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
 };
 
 // Initialize Firebase
