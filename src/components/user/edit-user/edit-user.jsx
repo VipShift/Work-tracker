@@ -1,50 +1,52 @@
 // src/components/user/edit-user/edit-user.jsx
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateUserFr } from '../../../store/user-reducer';
 import { useState, useEffect } from 'react';
+import { auth, db } from '../../../firebase';
+import { ref, onValue, set } from 'firebase/database';
 import './edit-user.css';
 
 export const EditUser = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // cardId
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  // Получаем конкретную карточку пользователя
-  const user = useSelector((state) =>
-    state.userState.users.find((u) => u.uid === id)
-  );
+  const [user, setUser] = useState(null);
 
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [phone, setPhone] = useState('');
 
   useEffect(() => {
-    if (user) {
-      setName(user.name);
-      setAge(user.age);
-      setPhone(user.phone);
-    }
-  }, [user]);
+    if (!auth.currentUser) return;
+    const userRef = ref(db, `users/${auth.currentUser.uid}/cards/${id}`);
+    const unsubscribe = onValue(userRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setUser({ id, ...data });
+        setName(data.name);
+        setAge(data.age);
+        setPhone(data.phone);
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, [id]);
 
   const handleSave = () => {
     if (!name.trim() || !age || !phone.trim()) {
       alert('Заполните все поля');
       return;
     }
+    if (!auth.currentUser || !user) return;
 
-    if (!user) return;
-
-    dispatch(
-      updateUserFr({
-        uid: user.uid,
-        name,
-        age: Number(age),
-        phone,
-        workingHours: user.workingHours || {},
-      })
-    );
-    navigate('/');
+    const userRef = ref(db, `users/${auth.currentUser.uid}/cards/${id}`);
+    set(userRef, {
+      name,
+      age: Number(age),
+      phone,
+      workingHours: user.workingHours || {},
+    })
+      .then(() => navigate('/'))
+      .catch((err) => console.error('Ошибка при сохранении:', err));
   };
 
   if (!user) return <p className="glass-text">Пользователь не найден</p>;

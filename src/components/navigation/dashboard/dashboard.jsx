@@ -6,6 +6,7 @@ import {
   subscribeToUsersRealtime,
   logoutUserFr,
 } from '../../../store/user-reducer';
+import './dashboard.css';
 
 export const Dashboard = () => {
   const [loadingAuth, setLoadingAuth] = useState(true);
@@ -15,14 +16,12 @@ export const Dashboard = () => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      console.log('onAuthStateChanged:', user); // Debug: вывод состояния аутентификации
       setLoadingAuth(false);
       if (user) {
         const userRef = ref(db, `users/${user.uid}`);
         onValue(userRef, (snapshot) => {
           const data = snapshot.val();
           setCurrentUser(data);
-          // Если в базе данных нет данных, используем информацию из аутентификации
           setCurrentUser({ email: user.email, name: user.displayName });
 
           setLoadingUser(false);
@@ -46,8 +45,15 @@ export const Dashboard = () => {
   if (!currentUser) return <p>Пользователь не авторизован</p>;
   return (
     <>
-      <h2>Привет, {currentUser.email || 'Гость'}</h2>
-      <button onClick={handleLogout}>Выйти</button>
+      <div className="dashboard-glass">
+        <h2>
+          Привет,{' '}
+          {currentUser.email ? currentUser.email.split('@')[0] : 'Гость'}
+        </h2>
+        <button className="dashboard-btn" onClick={handleLogout}>
+          Выйти
+        </button>
+      </div>
     </>
   );
 };
