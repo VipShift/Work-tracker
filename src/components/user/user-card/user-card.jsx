@@ -1,51 +1,52 @@
-// src/components/user-cart/user-card.jsx
+// src/components/user/user-card/user-card.jsx
 import './user-card.css';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
-  updateWorkHourInFr,
-  deleteWorkHourFromFr,
+  updateUserHourFr,
+  deleteUserHourFr,
   deleteUserFr,
 } from '../../../store/user-reducer';
 import { useState, useEffect } from 'react';
+import { auth, db } from '../../../firebase';
+import { ref, onValue } from 'firebase/database';
 
 export const UserCard = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [user, setUser] = useState(null);
+  const [editingHours, setEditingHours] = useState({});
   const [isEditing, setIsEditing] = useState(false);
 
-  const user = useSelector((state) =>
-    state.userState.users.find((u) => u.id === id)
-  );
-
-  const [editingHours, setEditingHours] = useState({});
-
   useEffect(() => {
-    if (user?.workingHours) {
-      setEditingHours({ ...user.workingHours });
-    }
-  }, [user]);
+    if (!auth.currentUser) return;
+    const userRef = ref(db, `users/${auth.currentUser.uid}/cards/${id}`);
+    const unsubscribe = onValue(userRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setUser({ uid: id, ...data });
+        if (data.workingHours) setEditingHours({ ...data.workingHours });
+      }
+    });
+    return () => unsubscribe();
+  }, [id]);
 
-  if (!user) {
-    return <p className="glass-text">Пользователь не найден</p>;
-  }
+  if (!user) return <p className="glass-text">Пользователь не найден</p>;
 
   const handleChange = (hourId, field, value) => {
     setEditingHours((prev) => ({
       ...prev,
-      [hourId]: {
-        ...prev[hourId],
-        [field]: value,
-      },
+      [hourId]: { ...prev[hourId], [field]: value },
     }));
   };
 
   const handleSave = (hourId) => {
     const entry = editingHours[hourId];
     dispatch(
-      updateWorkHourInFr({
-        userId: user.id,
+      updateUserHourFr({
+        uid: auth.currentUser.uid,
+        cardId: user.uid,
         hourId,
         updatedHour: {
           amount: Number(entry.amount),
@@ -59,15 +60,29 @@ export const UserCard = () => {
 
   const handleDeleteHour = (hourId) => {
     if (window.confirm('Удалить эту запись?')) {
-      dispatch(deleteWorkHourFromFr({ userId: user.id, hourId }));
+      dispatch(
+        deleteUserHourFr({
+          uid: auth.currentUser.uid,
+          cardId: user.uid,
+          hourId,
+        })
+      );
     }
   };
 
-  const handleDeleteUser = (userId) => {
+  const handleDeleteUser = () => {
     if (window.confirm('Удалить пользователя?')) {
-      dispatch(deleteUserFr(userId));
+      dispatch(deleteUserFr({ uid: auth.currentUser.uid, cardId: user.uid }));
+      navigate('/');
     }
   };
+
+  const totalAmount = user.workingHours
+    ? Object.values(user.workingHours).reduce(
+        (total, hour) => total + Number(hour.amount || 0),
+        0
+      )
+    : 0;
 
   return (
     <div className="user-card-gradient glass-card">
@@ -75,44 +90,44 @@ export const UserCard = () => {
       <p className="glass-text">Имя: {user.name}</p>
       <p className="glass-text">Возраст: {user.age}</p>
       <p className="glass-text">Телефон: {user.phone}</p>
+      <p className="glass-text">Общее количество часов: {totalAmount}</p>
+
       <button
         className="glass-btn"
-        onClick={() => navigate(`/edit-user/${user.id}`)}
+        onClick={() => navigate(`/edit-user/${user.uid}`)}
       >
         <i className="bi bi-pencil-square"></i> Редактировать{' '}
-        <i class="bi bi-person"></i>
+        <i className="bi bi-person"></i>
       </button>
-      <button className="glass-btn" onClick={() => handleDeleteUser(user.id)}>
-        {' '}
-        <i className="bi bi-trash"></i> Удалить {''}
-        <i class="bi bi-person"></i>
+      <button className="glass-btn" onClick={handleDeleteUser}>
+        <i className="bi bi-trash"></i> Удалить <i className="bi bi-person"></i>
       </button>
       <button
         className="glass-btn"
         onClick={() => setIsEditing((prev) => !prev)}
       >
-        {' '}
         <i className="bi bi-pencil-square"></i>
-        {isEditing ? ' Отменить редактирование' : ' Редактировать '} ⏱
+        {isEditing ? ' Отменить редактирование' : ' Редактировать'} ⏱
       </button>
+
       <hr />
       <h3 className="glass-subtitle">Рабочие часы:</h3>
+
       {!isEditing && (
         <ul className="glass-list">
-          {user.workingHours && Object.entries(user.workingHours).length > 0 ? (
+          {user.workingHours && Object.keys(user.workingHours).length > 0 ? (
             Object.entries(user.workingHours)
               .reverse()
               .map(([hourId, entry]) => (
                 <li className="glass-item" key={hourId}>
                   <span className="date">{entry.date}</span>
-
                   <span className="amount">{entry.amount} ч</span>
                   <span className="type">({entry.shiftType})</span>
                 </li>
               ))
           ) : (
             <p className="glass-text">⏳ Пока нет записей</p>
-          )}{' '}
+          )}
         </ul>
       )}
 
@@ -135,7 +150,7 @@ export const UserCard = () => {
                     onChange={(e) =>
                       handleChange(hourId, 'amount', e.target.value)
                     }
-                  />{' '}
+                  />
                   <input
                     className="glass-input"
                     type="date"
@@ -143,7 +158,7 @@ export const UserCard = () => {
                     onChange={(e) =>
                       handleChange(hourId, 'date', e.target.value)
                     }
-                  />{' '}
+                  />
                   <select
                     className="glass-select"
                     value={entry.shiftType}
@@ -153,14 +168,14 @@ export const UserCard = () => {
                   >
                     <option value="Стандарт">Стандарт</option>
                     <option value="Выходные">Выходные</option>
-                  </select>{' '}
+                  </select>
                   <div className="button-row">
                     <button
                       className="glass-btn"
                       onClick={() => handleSave(hourId)}
                     >
                       <i className="bi bi-save"></i>
-                    </button>{' '}
+                    </button>
                     <button
                       className="glass-btn"
                       onClick={() => handleDeleteHour(hourId)}

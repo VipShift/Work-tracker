@@ -1,65 +1,88 @@
+// src/components/user/user-list/user-list.jsx
 import './user-list.css';
-import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { saveUserHoursFr } from '../../../store/user-reducer';
+import { auth, db } from '../../../firebase';
+import { ref, onValue, push, set } from 'firebase/database';
 
 export const UserList = () => {
-  const users = useSelector((state) => state.userState.users);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+  const [cards, setCards] = useState([]);
   const [inputs, setInputs] = useState({});
+  const [currentAuthUser, setCurrentAuthUser] = useState(null);
+  const navigate = useNavigate();
 
-  const handleChange = (userId, field, value) => {
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentAuthUser(user);
+      if (user) {
+        const cardsRef = ref(db, `users/${user.uid}/cards`);
+        onValue(cardsRef, (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            const arr = Object.keys(data).map((key) => ({
+              id: key,
+              ...data[key],
+            }));
+            setCards(arr);
+          } else {
+            setCards([]);
+          }
+        });
+      } else {
+        setCards([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleChange = (id, field, value) => {
     setInputs((prev) => ({
       ...prev,
-      [userId]: {
-        ...prev[userId],
+      [id]: {
+        ...prev[id],
         [field]: value,
       },
     }));
   };
 
-  const handleAdd = (userId) => {
-    const data = inputs[userId] || {};
-    const amount = data.amount !== undefined ? Number(data.amount) : 10;
+  const handleAddHours = (cardId) => {
+    const data = inputs[cardId] || {};
+    const amount = data.amount !== undefined ? Number(data.amount) : 8;
     const shiftType = data.shiftType || 'Стандарт';
-    const time = data.time || ' ';
-
+    const time = data.time || '';
     const today = new Date().toISOString().split('T')[0];
 
-    dispatch(
-      saveUserHoursFr({
-        userId,
-        hour: {
-          amount,
-          shiftType,
-          date: today,
-          time,
-        },
-      })
+    const hourRef = ref(
+      db,
+      `users/${currentAuthUser.uid}/cards/${cardId}/workingHours`
     );
+    const newHourRef = push(hourRef);
 
-    // Сбрасываем все поля, включая amount
+    set(newHourRef, {
+      amount,
+      shiftType,
+      date: today,
+      time,
+    });
+
     setInputs((prev) => ({
       ...prev,
-      [userId]: { amount: '', time: '', shiftType: 'Стандарт' },
+      [cardId]: { amount: '', time: '', shiftType: 'Стандарт' },
     }));
   };
 
-  useEffect(() => {
-    setInputs({});
-  }, [users]);
+  if (!currentAuthUser) return <p>Загрузка...</p>;
+  if (cards.length === 0) return <p>Нет карточек для вашей учётной записи</p>;
 
   return (
     <div className="user-list-wrapper">
-      <h2 className="glass-title">Список пользователей</h2>
+      <h2 className="glass-title">Список пользователей</h2>
       <div className="user-list-glass">
-        {users.map((user) => {
-          const userData = inputs[user.id] || {};
-          const workingHoursValues = user.workingHours
-            ? Object.values(user.workingHours).sort((a, b) =>
+        {cards.map((card) => {
+          const cardData = inputs[card.id] || {};
+          const workingHoursValues = card.workingHours
+            ? Object.values(card.workingHours).sort((a, b) =>
                 a.date.localeCompare(b.date)
               )
             : [];
@@ -70,19 +93,16 @@ export const UserList = () => {
               : null;
 
           return (
-            <div className="user-one glass-item" key={user.id}>
+            <div className="user-one glass-item" key={card.id}>
               <p className="glass-text">
                 <span className="user-open">
                   <i
                     className="bi bi-arrows-fullscreen"
-                    onClick={() => navigate(`/user/${user.id}`)}
-                  >
-                    {' '}
-                  </i>
+                    onClick={() => navigate(`/user/${card.id}`)}
+                  />
                 </span>
-                {user.name}
+                {card.name}
               </p>
-
               {lastWork && (
                 <p>
                   Последний рабочий час: {lastWork.date} — {lastWork.amount} ⏱
@@ -92,16 +112,16 @@ export const UserList = () => {
                 className="glass-input"
                 type="number"
                 placeholder="Часы"
-                value={userData.amount || ''}
+                value={cardData.amount || ''}
                 onChange={(e) =>
-                  handleChange(user.id, 'amount', e.target.value)
+                  handleChange(card.id, 'amount', e.target.value)
                 }
               />
               <select
                 className="glass-select"
-                value={userData.shiftType || 'Стандарт'}
+                value={cardData.shiftType || 'Стандарт'}
                 onChange={(e) =>
-                  handleChange(user.id, 'shiftType', e.target.value)
+                  handleChange(card.id, 'shiftType', e.target.value)
                 }
               >
                 <option value="Стандарт">Стандарт</option>
@@ -109,8 +129,8 @@ export const UserList = () => {
               </select>
               <i
                 className="bi bi-calendar-plus glass-btn-add-hours"
-                onClick={() => handleAdd(user.id)}
-              ></i>
+                onClick={() => handleAddHours(card.id)}
+              />
             </div>
           );
         })}

@@ -1,12 +1,12 @@
-import { useDispatch } from 'react-redux';
+// src/components/user/add-user/add-user.jsx
 import { useNavigate } from 'react-router-dom';
-import { saveUserFr } from '../../../store/user-reducer';
 import { useState } from 'react';
+import { auth, db } from '../../../firebase';
+import { ref, push, set } from 'firebase/database';
 import './add-user.css';
 
 export const AddUser = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
@@ -18,16 +18,22 @@ export const AddUser = () => {
       return;
     }
 
-    dispatch(
-      saveUserFr({
-        name,
-        age: Number(age),
-        phone,
-        workingHours: [],
-      })
-    );
+    // Ссылка на карточки текущего пользователя
+    const cardsRef = ref(db, `users/${auth.currentUser.uid}/cards`);
+    const newCardRef = push(cardsRef); // создаём уникальный ID для новой карточки
 
-    navigate('/');
+    set(newCardRef, {
+      name,
+      age: Number(age),
+      phone,
+      workingHours: {},
+    })
+      .then(() => {
+        navigate('/');
+      })
+      .catch((error) => {
+        console.error('Ошибка при добавлении карточки:', error);
+      });
   };
 
   return (
