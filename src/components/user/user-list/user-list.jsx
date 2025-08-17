@@ -107,6 +107,7 @@ export const UserList = () => {
                 <div className="glass-last-work">
                   <span className="glass-date"> {lastWork.date}</span>
                   <span className="glass-amount">
+                    --
                     {lastWork.amount} ч. <i className="bi bi-clock"></i>
                   </span>
                 </div>
