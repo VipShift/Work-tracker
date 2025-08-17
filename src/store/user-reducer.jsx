@@ -44,7 +44,7 @@ export const userReducer = (state = initialState, action) => {
     case DELETE_USER:
       return {
         ...state,
-        users: state.users.filter((u) => u.uid !== action.payload.uid),
+        users: state.users.filter((u) => u.uid !== action.payload),
       };
 
     case SET_LOADING:
@@ -65,9 +65,9 @@ export const updateUserAction = (user) => ({
   type: UPDATE_USER,
   payload: user,
 });
-export const deleteUserAction = (uid) => ({
+export const deleteUserAction = (cardId) => ({
   type: DELETE_USER,
-  payload: { uid },
+  payload: cardId,
 });
 export const setLoadingAction = (loading) => ({
   type: SET_LOADING,
@@ -107,14 +107,16 @@ export const updateUserFr = (user) => async (dispatch) => {
   }
 };
 
-export const deleteUserFr = (uid) => async (dispatch) => {
-  try {
-    await remove(ref(db, `users/${uid}`));
-    dispatch(deleteUserAction(uid));
-  } catch (error) {
-    dispatch(setErrorAction(error.message));
-  }
-};
+export const deleteUserFr =
+  ({ uid, cardId }) =>
+  async (dispatch) => {
+    try {
+      await remove(ref(db, `users/${uid}/cards/${cardId}`));
+      dispatch(deleteUserAction(cardId));
+    } catch (error) {
+      dispatch(setErrorAction(error.message));
+    }
+  };
 
 export const addUserHourFr =
   ({ uid, hour }) =>
@@ -139,10 +141,12 @@ export const updateUserHourFr =
   };
 
 export const deleteUserHourFr =
-  ({ uid, hourId }) =>
+  ({ uid, cardId, hourId }) =>
   async (dispatch) => {
     try {
-      await remove(ref(db, `users/${uid}/workingHours/${hourId}`));
+      await remove(
+        ref(db, `users/${uid}/cards/${cardId}/workingHours/${hourId}`)
+      );
     } catch (error) {
       dispatch(setErrorAction(error.message));
     }

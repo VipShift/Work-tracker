@@ -21,17 +21,21 @@ export const UserCard = () => {
 
   useEffect(() => {
     if (!auth.currentUser) return;
+
     const userRef = ref(db, `users/${auth.currentUser.uid}/cards/${id}`);
     const unsubscribe = onValue(userRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         setUser({ uid: id, ...data });
-        if (data.workingHours) setEditingHours({ ...data.workingHours });
+
+        setEditingHours((prev) =>
+          Object.keys(prev).length === 0 ? data.workingHours || {} : prev
+        );
       }
     });
+
     return () => unsubscribe();
   }, [id]);
-
   if (!user) return <p className="glass-text">Пользователь не найден</p>;
 
   const handleChange = (hourId, field, value) => {
@@ -56,18 +60,40 @@ export const UserCard = () => {
         },
       })
     );
+
+    // Локально обновляем user
+    setUser((prev) => ({
+      ...prev,
+      workingHours: {
+        ...prev.workingHours,
+        [hourId]: { ...entry },
+      },
+    }));
   };
 
   const handleDeleteHour = (hourId) => {
-    if (window.confirm('Удалить эту запись?')) {
-      dispatch(
-        deleteUserHourFr({
-          uid: auth.currentUser.uid,
-          cardId: user.uid,
-          hourId,
-        })
-      );
-    }
+    if (!window.confirm('Удалить эту запись?')) return;
+
+    dispatch(
+      deleteUserHourFr({
+        uid: auth.currentUser.uid,
+        cardId: user.uid,
+        hourId,
+      })
+    );
+
+    // Локально удаляем час
+    setEditingHours((prev) => {
+      const newHours = { ...prev };
+      delete newHours[hourId];
+      return newHours;
+    });
+
+    setUser((prev) => {
+      const newWorkingHours = { ...prev.workingHours };
+      delete newWorkingHours[hourId];
+      return { ...prev, workingHours: newWorkingHours };
+    });
   };
 
   const handleDeleteUser = () => {
@@ -87,10 +113,24 @@ export const UserCard = () => {
   return (
     <div className="user-card-gradient glass-card">
       <h2 className="glass-title">Карточка пользователя</h2>
-      <p className="glass-text">Имя: {user.name}</p>
-      <p className="glass-text">Возраст: {user.age}</p>
-      <p className="glass-text">Телефон: {user.phone}</p>
-      <p className="glass-text">Общее количество часов: {totalAmount}</p>
+      <div className="user-card-info">
+        <div className="info-row">
+          <span className="info-label">Имя:</span>
+          <span className="info-value">{user.name}</span>
+        </div>
+        <div className="info-row">
+          <span className="info-label">Возраст:</span>
+          <span className="info-value">{user.age}</span>
+        </div>
+        <div className="info-row">
+          <span className="info-label">Телефон:</span>
+          <span className="info-value">{user.phone}</span>
+        </div>
+        <div className="info-row">
+          <span className="info-label">Общее количество часов:</span>
+          <span className="info-value">{totalAmount}</span>
+        </div>
+      </div>
 
       <button
         className="glass-btn"

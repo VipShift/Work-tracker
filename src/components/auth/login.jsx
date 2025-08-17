@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { loginUserFr } from '../../store/user-reducer';
+import './login.css';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
@@ -21,10 +22,11 @@ export const Login = () => {
   };
 
   return (
-    <>
-      <form onSubmit={handleLogin}>
-        <h2>Вход</h2>
+    <div className="glass-container login-card">
+      <h2 className="glass-title">Вход</h2>
+      <form className="glass-form" onSubmit={handleLogin}>
         <input
+          className="glass-input"
           type="email"
           placeholder="Email"
           value={email}
@@ -32,15 +34,24 @@ export const Login = () => {
           required
         />
         <input
+          className="glass-input"
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="current-password"
+          required
         />
-        <button type="submit">Войти</button>
+        <button className="glass-btn" type="submit">
+          Войти
+        </button>
       </form>
-      <button onClick={() => navigate('/register')}>Регистрация</button>
-    </>
+      <button
+        className="glass-btn glass-btn-secondary"
+        onClick={() => navigate('/register')}
+      >
+        Регистрация
+      </button>
+    </div>
   );
 };

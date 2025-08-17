@@ -47,7 +47,7 @@ export const Dashboard = () => {
     <>
       <div className="dashboard-glass">
         <h2>
-          Привет,{' '}
+          <i className="bi bi-person"></i>{' '}
           {currentUser.email ? currentUser.email.split('@')[0] : 'Гость'}
         </h2>
         <button className="dashboard-btn" onClick={handleLogout}>

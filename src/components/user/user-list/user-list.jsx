@@ -68,7 +68,7 @@ export const UserList = () => {
 
     setInputs((prev) => ({
       ...prev,
-      [cardId]: { amount: '', time: '', shiftType: 'Стандарт' },
+      [cardId]: { amount: undefined, time: '', shiftType: 'Стандарт' },
     }));
   };
 
@@ -104,9 +104,12 @@ export const UserList = () => {
                 {card.name}
               </p>
               {lastWork && (
-                <p>
-                  Последний рабочий час: {lastWork.date} — {lastWork.amount} ⏱
-                </p>
+                <div className="glass-last-work">
+                  <span className="glass-date"> {lastWork.date}</span>
+                  <span className="glass-amount">
+                    {lastWork.amount} ч. <i className="bi bi-clock"></i>
+                  </span>
+                </div>
               )}
               <input
                 className="glass-input"
