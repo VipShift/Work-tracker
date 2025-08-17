@@ -5,7 +5,6 @@ import './settings.css';
 export const Settings = () => {
   return (
     <div className="settings-glass glass-wrapper-page">
-      <h1 className="glass-title center-text"> Настройки</h1>
       <AddUser />
     </div>
   );

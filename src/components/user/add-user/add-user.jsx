@@ -39,7 +39,7 @@ export const AddUser = () => {
   return (
     <div className="add-user-glass glass-wrapper">
       <div className="glass-card-form">
-        <h2 className="glass-title center-text">Добавить пользователя</h2>
+        <h2 className="glass-title center-text">Добавить карточку</h2>
 
         <input
           className="glass-input wide-input"

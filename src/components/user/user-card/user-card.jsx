@@ -112,7 +112,7 @@ export const UserCard = () => {
 
   return (
     <div className="user-card-gradient glass-card">
-      <h2 className="glass-title">Карточка пользователя</h2>
+      <h2 className="glass-title">Карточка {user.name}</h2>
       <div className="user-card-info">
         <div className="info-row">
           <span className="info-label">Имя:</span>
@@ -120,14 +120,14 @@ export const UserCard = () => {
         </div>
         <div className="info-row">
           <span className="info-label">Возраст:</span>
-          <span className="info-value">{user.age}</span>
+          <span className="info-value">{user.age} лет</span>
         </div>
         <div className="info-row">
           <span className="info-label">Телефон:</span>
           <span className="info-value">{user.phone}</span>
         </div>
         <div className="info-row">
-          <span className="info-label">Общее количество часов:</span>
+          <span className="info-label">Общее кол. часов:</span>
           <span className="info-value">{totalAmount}</span>
         </div>
       </div>

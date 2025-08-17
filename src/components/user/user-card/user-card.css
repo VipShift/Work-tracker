@@ -48,64 +48,56 @@
   align-items: center;
   gap: 8px;
   padding: 5px 10px;
+  margin: 8px 0;
   justify-content: flex-start;
   flex-wrap: wrap;
-}
-
-.glass-item span:not(:last-child)::after {
-  content: "";
-  display: inline-block;
-  width: 1px;
-  height: 14px;
-  background-color: rgba(255, 255, 255, 0.3); /* более мягкий цвет */
-  margin: 0 8px;
-  border-radius: 2px; /* округлённая линия */
-}
-
-
-.glass-item .date {
-  color: #bdbdbd;
-  font-size: 1rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  color: white;
 }
 
 
 
-.glass-item .amount {
-  color: #ffffff;
-}
 
-.glass-item .type {
-  font-weight: bold;
-  color: #a4a3a3;
-}
 
 .user-card-info {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* расстояние между строками */
-  padding: 10px 15px;
-  margin-top: 10px;
-  border-radius: 12px;
+  gap: 8px;
+  padding: 24px;
+  margin: 20px auto;
+  max-width: 700px;
+  border-radius: 20px;
   background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-  color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  color: white;
   font-weight: 500;
+  box-sizing: border-box;
 }
 
 .user-card-info .info-row {
   display: flex;
-  justify-content: space-between; /* слева label, справа значение */
+  justify-content: space-between; /* ключ слева, значение справа */
+  align-items: center;
   width: 100%;
+  flex-wrap: wrap; /* перенос на узких экранах */
+  column-gap: 20px; /* расстояние между ключом и значением */
 }
 
 .user-card-info .info-label {
-  font-weight: 500;
   color: #bdbdbd;
+  flex-shrink: 0; /* ключ не сжимается */
 }
 
 .user-card-info .info-value {
   font-weight: bold;
   color: #fff;
+  text-align: right;
+  word-wrap: break-word; /* перенос длинного текста */
 }
