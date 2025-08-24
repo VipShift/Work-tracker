@@ -4,6 +4,7 @@
   padding: 0;
 }
 
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(to bottom right, #1a1a1a, #333333);
@@ -23,22 +24,28 @@ button {
   border: none;
 }
 
-input, select {
-  font-family: inherit;
+input {
+  font: inherit;
+  color: inherit;
+  background: none;
   border: none;
   outline: none;
-  color: inherit;
-  font-size: inherit;
-  background: none;
-  cursor: pointer;
-  padding: 0;
-  margin: 0;
-  max-width:  100%;
-  text-align: center;
-
+  cursor: text;
+  display: block;
+  max-width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-
+select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  max-width: 100%;
+}
 
 
 .glass-title {
@@ -53,18 +60,28 @@ input, select {
   color: white;
 }
 
-.glass-input,
-.glass-select {
+.glass-input {
+  box-sizing: border-box;
   width: 100%;
-  padding: 10px 16px;
+  height: 48px;
+  padding: 12px 16px;
+  font-size: 16px;
+  line-height: normal;
+  text-align: left;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.1);
   color: white;
   margin-bottom: 8px;
 }
 
+.glass-input::placeholder {
+  line-height: normal;
+  opacity: .7;
+}
+
+/* select */
 .glass-select {
-  appearance: none; /* убирает дефолтные стрелки браузера */
+  appearance: none;
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
   padding: 10px;
@@ -74,6 +91,7 @@ input, select {
   font-size: 16px;
   backdrop-filter: blur(5px);
   transition: 0.3s ease;
+  margin-bottom: 8px;
 }
 
 .glass-select:focus {
@@ -81,16 +99,17 @@ input, select {
   border-color: rgb(79, 79, 79);
   box-shadow: 0 0 5px rgb(223, 223, 223);
 }
+
 .glass-select option {
   background-color: #2c2c2c;
   color: white;
-}
 
+}
 
 .glass-btn {
   padding: 10px 16px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.088); /* полупрозрачный фон */
+  background: rgba(255, 255, 255, 0.088);
   color: white;
   font-weight: bold;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -99,11 +118,15 @@ input, select {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
 }
 
-
-
 .glass-btn:hover {
   transform: scale(1.05);
   background: rgba(10, 10, 10, 0.15);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+html, body {
+  height: 100%;
+  background: linear-gradient(to bottom right, #1a1a1a, #333333);
+  overscroll-behavior: none;
 }
 

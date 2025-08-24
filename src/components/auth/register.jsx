@@ -24,6 +24,7 @@ export const Register = () => {
         <input
           className="glass-input"
           type="email"
+          autocomplete="username"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -32,6 +33,7 @@ export const Register = () => {
         <input
           className="glass-input"
           type="password"
+          autocomplete="current-password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

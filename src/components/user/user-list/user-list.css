@@ -70,12 +70,12 @@
   right: 10px;
   cursor: pointer;
   font-size: 24px;
-  color: #626262;
+  color: #b9b9b9;
   transition: transform 0.3s ease;
 }
 
 .user-open:hover {
-  transform: scale(1.2);
+  transform: scale(1.20);
   color: #ffffff;
 }
 
@@ -87,9 +87,8 @@
   font-size: 25px;
   max-width: 25px;
   max-height: 25px;
-  color: rgb(85, 85, 85);
+  color: rgb(141, 141, 141);
   font-weight: bold;
-  backdrop-filter: blur(20px);
   transition: all 0.3s ease;
   align-items: center;
   justify-content: center;
@@ -97,7 +96,7 @@
 }
 
 .glass-btn-add-hours:hover {
-  transform: scale(1.05);
+  transform: scale(1.30);
   color: #ffffff;
 }
 

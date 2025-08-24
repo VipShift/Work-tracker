@@ -119,11 +119,11 @@ export const deleteUserFr =
   };
 
 export const addUserHourFr =
-  ({ uid, hour }) =>
+  ({ uid, cardId, hour }) =>
   async (dispatch) => {
     try {
       const newHour = { ...hour, id: uuid() };
-      const newRef = push(ref(db, `users/${uid}/workingHours`));
+      const newRef = push(ref(db, `users/${uid}/cards/${cardId}/workingHours`));
       await set(newRef, newHour);
     } catch (error) {
       dispatch(setErrorAction(error.message));
@@ -131,10 +131,13 @@ export const addUserHourFr =
   };
 
 export const updateUserHourFr =
-  ({ uid, hourId, updatedHour }) =>
+  ({ uid, cardId, hourId, updatedHour }) =>
   async (dispatch) => {
     try {
-      await set(ref(db, `users/${uid}/workingHours/${hourId}`), updatedHour);
+      await set(
+        ref(db, `users/${uid}/cards/${cardId}/workingHours/${hourId}`),
+        updatedHour
+      );
     } catch (error) {
       dispatch(setErrorAction(error.message));
     }
