@@ -14,7 +14,11 @@ export const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(loginUserFr({ email, password }));
+      const cleanEmail = email.trim().toLowerCase();
+      const cleanPassword = password.trim().toLowerCase();
+      await dispatch(
+        loginUserFr({ email: cleanEmail, password: cleanPassword })
+      );
       navigate('/dashboard');
     } catch (error) {
       console.log('Ошибка логина:', error);

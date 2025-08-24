@@ -13,7 +13,9 @@ export const Register = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    dispatch(registerUserFr({ email, password, name: email.split('@')[0] }));
+    dispatch(
+      registerUserFr({ email, password, name: email.trim().split('@')[0] })
+    );
     navigate('/dashboard');
   };
 
